@@ -1,7 +1,7 @@
 
-local STRIKE_AREA_RADIUS = 70
-local STRIKE_DURATION = 20
-local STRIKE_MISSILE_COUNT = 50
+local STRIKE_AREA_RADIUS = 50
+local STRIKE_DURATION = 35
+local STRIKE_MISSILE_COUNT = 60
 
 local FiringMode = {
 	Disabled = 0,
@@ -11,7 +11,7 @@ local FiringMode = {
 
 local configs = {
 	[FiringMode.Target] = { {radius = 1, segments = 15, width = 0.5}, {radius = 2, segments = 20, width = 0.5}, {radius = 3, segments = 25, width = 0.5}},
-	[FiringMode.Area] = { {radius = STRIKE_AREA_RADIUS, segments = 100, width = 2} }
+	[FiringMode.Area] = { {radius = STRIKE_AREA_RADIUS, segments = 80, width = 2} }
 } 
 
 local pointOfAim = { 
@@ -30,68 +30,44 @@ local updateEvent = nil
 local RED = Vec4(1, 0, 0, 0.5)
 local WHITE = Vec4(1, 1, 1, 0.5)
 
-local MISSILE_AIRTIME = 3.3
+local MISSILE_AIRTIME = 6
 
-Events:Subscribe('Player:UpdateInput', function()
-
-	if InputManager:WentKeyDown(InputDeviceKeys.IDK_F1) then
-
-		pointOfAim.mode = FiringMode.Target
-
-		if drawHudEvent == nil then
-			drawHudEvent = Events:Subscribe('UI:DrawHud', OnDrawHud)
-		end
+Events:Subscribe("vu-artillerystrike:Invoke",function(stepNr,keyboardKey)
+	print("Killstreak enabled")
+	pointOfAim.mode = FiringMode.Area
+	Events:Subscribe('Player:UpdateInput', function()
 
 		if updateEvent == nil then
 			updateEvent = Events:Subscribe('UpdateManager:Update', OnUpdate)
 		end
-	end
-
-	if InputManager:WentKeyDown(InputDeviceKeys.IDK_F2) then
-
-		pointOfAim.mode = FiringMode.Area
-
-		if updateEvent == nil then
-			updateEvent = Events:Subscribe('UpdateManager:Update', OnUpdate)
-		end
-
-		if drawHudEvent == nil then
-			drawHudEvent = Events:Subscribe('UI:DrawHud', OnDrawHud)
-		end
-	end
-
-	if InputManager:WentKeyDown(InputDeviceKeys.IDK_F3) then
-
-		pointOfAim.mode = FiringMode.Disabled
-	end	
-
-	if InputManager:WentKeyDown(InputDeviceKeys.IDK_F4) then
-		
-		if drawHudEvent ~= nil then
-			drawHudEvent:Unsubscribe()
-			drawHudEvent = nil
-		end
-
-		if updateEvent ~= nil then
-			updateEvent:Unsubscribe()
-			updateEvent = nil
-		end
-	end
-
-	if InputManager:WentKeyDown(InputDeviceKeys.IDK_E) and pointOfAim.mode == FiringMode.Target then
-
-		NetEvents:Send('Airstrike:Launch', pointOfAim.position)
-
-		targets[#targets+1] = { position = pointOfAim.position:Clone(), points = {}, timer = MISSILE_AIRTIME }
-	end	
-
-	if InputManager:WentKeyDown(InputDeviceKeys.IDK_E) and pointOfAim.mode == FiringMode.Area then
 	
-		AreaStrike(pointOfAim.position)
+		if drawHudEvent == nil then
+			drawHudEvent = Events:Subscribe('UI:DrawHud', OnDrawHud)
+		end
 
-		zones[#zones+1] = { position = pointOfAim.position, points = {}, timer = STRIKE_DURATION + MISSILE_AIRTIME}
-	end	
+		if InputManager:WentKeyDown(keyboardKey) then
+			print("Killstreak disabled")
+			Events:Dispatch("Killstreak:notUsedStep",stepNr)
+			pointOfAim.mode = FiringMode.Disabled
+		end	
+	
+		if InputManager:WentKeyDown(InputDeviceKeys.IDK_F) and pointOfAim.mode == FiringMode.Area then
+		
+			AreaStrike(pointOfAim.position)
+	
+			zones[#zones+1] = { position = pointOfAim.position, points = {}, timer = STRIKE_DURATION + MISSILE_AIRTIME}
+			print("Killstreak used")
+			pointOfAim.mode = FiringMode.Disabled
+			Events:Dispatch("Killstreak:usedStep",stepNr)
+			Events:Unsubscribe('Player:UpdateInput')
+			Events:Unsubscribe('UpdateManager:Update')
+			Events:Unsubscribe('UI:DrawHud')
+			updateEvent = nil
+			drawHudEvent = nil
+		end	
+	end)
 end)
+
 
 function AreaStrike(position)
 
