@@ -1,7 +1,7 @@
 
-local STRIKE_AREA_RADIUS = 50
-local STRIKE_DURATION = 35
-local STRIKE_MISSILE_COUNT = 60
+local STRIKE_AREA_RADIUS = 30
+local STRIKE_DURATION = 25
+local STRIKE_MISSILE_COUNT = 35
 
 local FiringMode = {
 	Disabled = 0,
@@ -32,6 +32,11 @@ local WHITE = Vec4(1, 1, 1, 0.5)
 
 local MISSILE_AIRTIME = 6
 
+Events:Subscribe("vu-artillerystrike:Disable",function(stepNr)
+	print("Killstreak disabled")
+	pointOfAim.mode = FiringMode.Disabled
+end)
+
 Events:Subscribe("vu-artillerystrike:Invoke",function(stepNr,keyboardKey)
 	print("Killstreak enabled")
 	pointOfAim.mode = FiringMode.Area
@@ -44,12 +49,6 @@ Events:Subscribe("vu-artillerystrike:Invoke",function(stepNr,keyboardKey)
 		if drawHudEvent == nil then
 			drawHudEvent = Events:Subscribe('UI:DrawHud', OnDrawHud)
 		end
-
-		if InputManager:WentKeyDown(keyboardKey) then
-			print("Killstreak disabled")
-			Events:Dispatch("Killstreak:notUsedStep",stepNr)
-			pointOfAim.mode = FiringMode.Disabled
-		end	
 	
 		if InputManager:WentKeyDown(InputDeviceKeys.IDK_F) and pointOfAim.mode == FiringMode.Area then
 		
@@ -137,7 +136,7 @@ function OnDrawHud()
 	for _,target in pairs(targets) do
 
 		if #target.points > 0 then
-			DrawTarget(target.points, FiringMode.Target, RED)
+			--DrawTarget(target.points, FiringMode.Target, RED)
 		end
 	end
 
