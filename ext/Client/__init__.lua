@@ -99,7 +99,7 @@ Events:Subscribe('Engine:Update', function(dt)
 
 			targets[#targets+1] = pending[i]
 
-			NetEvents:Send('Airstrike:Launch', pending[i].position)
+			NetEvents:SendLocal('vu-artillerystrike:Launch', pending[i].position)
 
 			table.remove(pending, i)
 		end

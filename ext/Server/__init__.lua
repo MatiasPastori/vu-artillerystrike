@@ -1,7 +1,7 @@
 
 local mortarPartitionGuid = Guid('5350B268-18C9-11E0-B820-CD6C272E4FCC')
 local customBlueprintGuid = Guid('D407033B-49AE-DF14-FE19-FC776AE04E2C')
-NetEvents:Subscribe('Airstrike:Launch', function(player, position)
+NetEvents:Subscribe('vu-artillerystrike:Launch', function(player, position)
 
 	position.y = position.y + 200
 
