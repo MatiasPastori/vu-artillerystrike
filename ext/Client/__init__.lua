@@ -1,7 +1,7 @@
 
-local STRIKE_AREA_RADIUS = 30
-local STRIKE_DURATION = 25
-local STRIKE_MISSILE_COUNT = 35
+local STRIKE_AREA_RADIUS = 28
+local STRIKE_DURATION = 15
+local STRIKE_MISSILE_COUNT = 33
 
 local FiringMode = {
 	Disabled = 0,

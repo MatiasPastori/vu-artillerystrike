@@ -22,12 +22,12 @@ Events:Subscribe('Partition:Loaded', function(partition)
     --print(tostring(artyProjectileData.explosion.blastRadius).." | "..tostring(artyProjectileData.explosion.innerBlastRadius).." | "..tostring(artyProjectileData.explosion.blastDamage).." | "..tostring(artyProjectileData.explosion.shockwaveImpulse).." | "..tostring(artyProjectileData.explosion.shockwaveRadius).." | "..tostring(artyProjectileData.explosion.shockwaveTime).." | "
     --..tostring(artyProjectileData.explosion.hasStunEffect).." | "..tostring(artyProjectileData.explosion.cameraShockwaveRadius).." | ")
     -- Make changes...
-    artyProjectileData.explosion.blastDamage = 110
-    artyProjectileData.explosion.blastRadius = 20
-    artyProjectileData.explosion.innerBlastRadius = 10
-    artyProjectileData.explosion.shockwaveRadius = 40
-    artyProjectileData.explosion.shockwaveImpulse = 1200
-    artyProjectileData.explosion.shockwaveTime = 0.7
+    artyProjectileData.explosion.blastDamage = 80
+    artyProjectileData.explosion.blastRadius = 15
+    artyProjectileData.explosion.innerBlastRadius = 8
+    artyProjectileData.explosion.shockwaveRadius = 30
+    artyProjectileData.explosion.shockwaveImpulse = 800
+    artyProjectileData.explosion.shockwaveTime = 0.6
     artyProjectileData.explosion.hasStunEffect = true
     --print(tostring(artyProjectileData.explosion.blastRadius).." | "..tostring(artyProjectileData.explosion.innerBlastRadius).." | "..tostring(artyProjectileData.explosion.blastDamage).." | "..tostring(artyProjectileData.explosion.shockwaveImpulse).." | "..tostring(artyProjectileData.explosion.shockwaveRadius).." | "..tostring(artyProjectileData.explosion.shockwaveTime).." | "
     --..tostring(artyProjectileData.explosion.hasStunEffect).." | "..tostring(artyProjectileData.explosion.cameraShockwaveRadius).." | ")
