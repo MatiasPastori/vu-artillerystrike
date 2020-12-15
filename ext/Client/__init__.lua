@@ -32,6 +32,24 @@ local WHITE = Vec4(1, 1, 1, 0.5)
 
 local MISSILE_AIRTIME = 6
 
+Hooks:Install(
+	"UI:PushScreen",
+	1,
+	function(hook, screen, priority, parentGraph, stateNodeGuid)
+		local screen = UIGraphAsset(screen)
+		print(screen.name)
+
+		if screen.name == "UI/Flow/Screen/KillScreen" and (pointOfAim.mode == 1 or pointOfAim.mode == 2) then
+			pointOfAim.mode = FiringMode.Disabled
+			Events:Unsubscribe("Player:UpdateInput")
+			Events:Unsubscribe("UpdateManager:Update")
+			Events:Unsubscribe("UI:DrawHud")
+			updateEvent = nil
+			drawHudEvent = nil
+		end
+	end
+)
+
 Events:Subscribe("vu-artillerystrike:Disable",function(stepNr)
 	print("Killstreak disabled")
 	pointOfAim.mode = FiringMode.Disabled
@@ -50,7 +68,7 @@ Events:Subscribe("vu-artillerystrike:Invoke",function(stepNr,keyboardKey)
 			drawHudEvent = Events:Subscribe('UI:DrawHud', OnDrawHud)
 		end
 	
-		if InputManager:WentKeyDown(InputDeviceKeys.IDK_F) and pointOfAim.mode == FiringMode.Area then
+		if InputManager:WentKeyDown(InputDeviceKeys.IDK_F9) and pointOfAim.mode == FiringMode.Area then
 		
 			AreaStrike(pointOfAim.position)
 	
