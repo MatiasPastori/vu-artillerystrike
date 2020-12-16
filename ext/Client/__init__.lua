@@ -1,7 +1,7 @@
 
-local STRIKE_AREA_RADIUS = 28
+local STRIKE_AREA_RADIUS = 30
 local STRIKE_DURATION = 15
-local STRIKE_MISSILE_COUNT = 33
+local STRIKE_MISSILE_COUNT = 24
 
 local FiringMode = {
 	Disabled = 0,
@@ -37,7 +37,6 @@ Hooks:Install(
 	1,
 	function(hook, screen, priority, parentGraph, stateNodeGuid)
 		local screen = UIGraphAsset(screen)
-		print(screen.name)
 
 		if screen.name == "UI/Flow/Screen/KillScreen" and (pointOfAim.mode == 1 or pointOfAim.mode == 2) then
 			pointOfAim.mode = FiringMode.Disabled

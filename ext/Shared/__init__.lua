@@ -22,9 +22,9 @@ Events:Subscribe('Partition:Loaded', function(partition)
     --print(tostring(artyProjectileData.explosion.blastRadius).." | "..tostring(artyProjectileData.explosion.innerBlastRadius).." | "..tostring(artyProjectileData.explosion.blastDamage).." | "..tostring(artyProjectileData.explosion.shockwaveImpulse).." | "..tostring(artyProjectileData.explosion.shockwaveRadius).." | "..tostring(artyProjectileData.explosion.shockwaveTime).." | "
     --..tostring(artyProjectileData.explosion.hasStunEffect).." | "..tostring(artyProjectileData.explosion.cameraShockwaveRadius).." | ")
     -- Make changes...
-    artyProjectileData.explosion.blastDamage = 80
-    artyProjectileData.explosion.blastRadius = 15
-    artyProjectileData.explosion.innerBlastRadius = 8
+    artyProjectileData.explosion.blastDamage = 75
+    artyProjectileData.explosion.blastRadius = 13
+    artyProjectileData.explosion.innerBlastRadius = 7
     artyProjectileData.explosion.shockwaveRadius = 30
     artyProjectileData.explosion.shockwaveImpulse = 800
     artyProjectileData.explosion.shockwaveTime = 0.6
