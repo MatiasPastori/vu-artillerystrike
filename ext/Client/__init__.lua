@@ -54,7 +54,7 @@ Events:Subscribe("vu-artillerystrike:Disable",function(stepNr)
 	pointOfAim.mode = FiringMode.Disabled
 end)
 
-Events:Subscribe("vu-artillerystrike:Invoke",function(stepNr,keyboardKey)
+Events:Subscribe("vu-artillerystrike:Invoke",function(stepNr)
 	print("Killstreak enabled")
 	pointOfAim.mode = FiringMode.Area
 	Events:Subscribe('Player:UpdateInput', function()
@@ -68,7 +68,8 @@ Events:Subscribe("vu-artillerystrike:Invoke",function(stepNr,keyboardKey)
 		end
 	
 		if InputManager:WentKeyDown(InputDeviceKeys.IDK_F9) and pointOfAim.mode == FiringMode.Area then
-		
+			
+			Events:Dispatch("Killstreak:showNotification",json.encode({title="Artillery",message="Fire order received"}))
 			AreaStrike(pointOfAim.position)
 	
 			zones[#zones+1] = { position = pointOfAim.position, points = {}, timer = STRIKE_DURATION + MISSILE_AIRTIME}
