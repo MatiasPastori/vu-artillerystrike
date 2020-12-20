@@ -68,7 +68,7 @@ Events:Subscribe(
 		print("Killstreak enabled")
 		pointOfAim.mode = FiringMode.Area
 		Events:Subscribe(
-			"Player:UpdateInput",
+			"Client:UpdateInput",
 			function()
 				if updateEvent == nil then
 					updateEvent = Events:Subscribe("UpdateManager:Update", OnUpdate)
@@ -78,7 +78,12 @@ Events:Subscribe(
 					drawHudEvent = Events:Subscribe("UI:DrawHud", OnDrawHud)
 				end
 
-				if InputManager:WentKeyDown(InputDeviceKeys.IDK_F9) and pointOfAim.mode == FiringMode.Area then
+				if InputManager:WentKeyUp(InputDeviceKeys.IDK_F9) and pointOfAim.mode == FiringMode.Area then
+					player = PlayerManager:GetLocalPlayer()
+					if player.inVehicle == true then
+						Events:Dispatch("Killstreak:showNotification", json.encode({title = "Artillery killstreak", message = "Please leave your vehicle"}))
+						return
+					end
 					Events:Dispatch("Killstreak:showNotification", json.encode({title = "Artillery", message = "Fire order received"}))
 					AreaStrike(pointOfAim.position)
 					Events:Dispatch("Killstreak:newTimer", json.encode({duration = MISSILE_AIRTIME+1, text = "till artillery impact"}))
@@ -175,7 +180,7 @@ function OnDrawHud()
 
 	for _, zone in pairs(zones) do
 		if #zone.points > 0 then
-			DrawTarget(zone.points, FiringMode.Area, RED)
+			--DrawTarget(zone.points, FiringMode.Area, RED)
 		end
 	end
 end
