@@ -13,11 +13,11 @@ local FiringMode = {
 
 local configs = {
 	[FiringMode.Target] = {
-		{radius = 1, segments = 15, width = 0.5},
-		{radius = 2, segments = 20, width = 0.5},
-		{radius = 3, segments = 25, width = 0.5}
+		{ radius = 1, segments = 15, width = 0.5 },
+		{ radius = 2, segments = 20, width = 0.5 },
+		{ radius = 3, segments = 25, width = 0.5 }
 	},
-	[FiringMode.Area] = {{radius = STRIKE_AREA_RADIUS, segments = 80, width = 2}}
+	[FiringMode.Area] = { { radius = STRIKE_AREA_RADIUS, segments = 80, width = 2 } }
 }
 
 local pointOfAim = {
@@ -39,7 +39,7 @@ local fired = 0
 
 Hooks:Install(
 	"UI:PushScreen",
-	1,
+	150,
 	function(hook, screen, priority, parentGraph, stateNodeGuid)
 		local screen = UIGraphAsset(screen)
 
@@ -78,16 +78,24 @@ Events:Subscribe(
 					drawHudEvent = Events:Subscribe("UI:DrawHud", OnDrawHud)
 				end
 
-				if InputManager:WentKeyUp(InputDeviceKeys.IDK_F9) and pointOfAim.mode == FiringMode.Area then
+				if InputManager:WentKeyUp(InputDeviceKeys.IDK_Q) and pointOfAim.mode == FiringMode.Area then
 					player = PlayerManager:GetLocalPlayer()
 					if player.inVehicle == true then
-						Events:Dispatch("Killstreak:showNotification", json.encode({title = "Artillery killstreak", message = "Please leave your vehicle"}))
+						Events:Dispatch("Killstreak:showNotification",
+							json.encode({ title = "Artillery killstreak", message = "Please leave your vehicle" }))
 						return
 					end
-					Events:Dispatch("Killstreak:showNotification", json.encode({title = "Artillery", message = "Fire order received"}))
+					Events:Dispatch("Killstreak:showNotification",
+						json.encode({ title = "Artillery", message = "Fire order received" }))
 					AreaStrike(pointOfAim.position)
-					Events:Dispatch("Killstreak:newTimer", json.encode({duration = MISSILE_AIRTIME+1, text = "till artillery impact"}))
-					zones[#zones + 1] = {position = pointOfAim.position, points = {}, timer = STRIKE_DURATION + MISSILE_AIRTIME}
+					Events:Dispatch("Killstreak:newTimer",
+						json.encode({ duration = MISSILE_AIRTIME + 1, text = "till artillery impact" }))
+					zones[#zones + 1] = {
+						position = pointOfAim.position,
+						points = {},
+						timer = STRIKE_DURATION +
+							MISSILE_AIRTIME
+					}
 					print("Killstreak used")
 					pointOfAim.mode = FiringMode.Disabled
 					Events:Dispatch("Killstreak:usedStep", stepNr)
@@ -115,7 +123,7 @@ function AreaStrike(position)
 
 		local fireAfter = MathUtils:GetRandom(0, STRIKE_DURATION)
 
-		pending[#pending + 1] = {position = position, points = {}, timer = fireAfter}
+		pending[#pending + 1] = { position = position, points = {}, timer = fireAfter }
 	end
 end
 
@@ -140,11 +148,11 @@ Events:Subscribe(
 				targets[#targets + 1] = pending[i]
 
 				NetEvents:SendLocal("vu-artillerystrike:Launch", pending[i].position)
-				fired = fired +1
+				fired = fired + 1
 				table.remove(pending, i)
 			end
 		end
-		if  fired == STRIKE_MISSILE_COUNT then
+		if fired == STRIKE_MISSILE_COUNT then
 			fired = 0
 			startDelay = MISSILE_AIRTIME
 		end
@@ -174,7 +182,7 @@ function OnDrawHud()
 
 	for _, target in pairs(targets) do
 		if #target.points > 0 then
-		--DrawTarget(target.points, FiringMode.Target, RED)
+			--DrawTarget(target.points, FiringMode.Target, RED)
 		end
 	end
 
@@ -239,7 +247,7 @@ function OnUpdate(delta, pass)
 			local innerPoints = GetCirclePoints(pointOfAim.position, config.radius - config.width, config.segments)
 			local outerPoints = GetCirclePoints(pointOfAim.position, config.radius, config.segments)
 
-			pointOfAim.points[index] = {inner = {}, outer = {}}
+			pointOfAim.points[index] = { inner = {}, outer = {} }
 
 			for i = 1, config.segments do
 				pointOfAim.points[index].inner[i] = RaycastDown(innerPoints[i])
@@ -255,7 +263,7 @@ function OnUpdate(delta, pass)
 				local innerPoints = GetCirclePoints(target.position, config.radius - config.width, config.segments)
 				local outerPoints = GetCirclePoints(target.position, config.radius, config.segments)
 
-				target.points[index] = {inner = {}, outer = {}}
+				target.points[index] = { inner = {}, outer = {} }
 
 				for i = 1, config.segments do
 					target.points[index].inner[i] = RaycastDown(innerPoints[i])
@@ -272,7 +280,7 @@ function OnUpdate(delta, pass)
 				local innerPoints = GetCirclePoints(zone.position, config.radius - config.width, config.segments)
 				local outerPoints = GetCirclePoints(zone.position, config.radius, config.segments)
 
-				zone.points[index] = {inner = {}, outer = {}}
+				zone.points[index] = { inner = {}, outer = {} }
 
 				for i = 1, config.segments do
 					zone.points[index].inner[i] = RaycastDown(innerPoints[i])
@@ -309,11 +317,11 @@ function RaycastDown(position)
 	-- Perform raycast, returns a RayCastHit object.
 	local raycastHit =
 		RaycastManager:Raycast(
-		castStart,
-		castEnd,
-		RayCastFlags.DontCheckWater | RayCastFlags.DontCheckCharacter | RayCastFlags.DontCheckRagdoll |
+			castStart,
+			castEnd,
+			RayCastFlags.DontCheckWater | RayCastFlags.DontCheckCharacter | RayCastFlags.DontCheckRagdoll |
 			RayCastFlags.CheckDetailMesh
-	)
+		)
 
 	if raycastHit == nil then
 		return position
@@ -344,19 +352,19 @@ function Raycast()
 	-- We get the raycast end transform with the calculated direction and the max distance.
 	local castEnd =
 		Vec3(
-		transform.trans.x + (direction.x * 1000),
-		transform.trans.y + (direction.y * 1000),
-		transform.trans.z + (direction.z * 1000)
-	)
+			transform.trans.x + (direction.x * 1000),
+			transform.trans.y + (direction.y * 1000),
+			transform.trans.z + (direction.z * 1000)
+		)
 
 	-- Perform raycast, returns a RayCastHit object.
 	local raycastHit =
 		RaycastManager:Raycast(
-		castStart,
-		castEnd,
-		RayCastFlags.DontCheckWater | RayCastFlags.DontCheckCharacter | RayCastFlags.DontCheckRagdoll |
+			castStart,
+			castEnd,
+			RayCastFlags.DontCheckWater | RayCastFlags.DontCheckCharacter | RayCastFlags.DontCheckRagdoll |
 			RayCastFlags.CheckDetailMesh
-	)
+		)
 
 	return raycastHit
 end
